@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,13 +17,13 @@ public class Drag : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUp
     
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData) {
         _graphic.raycastTarget = false;
-        transform.localScale = Vector3.one * 1.1f;
+        transform.DOScale(Vector3.one * 1.2f, .3f).SetEase(Ease.InOutBack);
         OnPointerDown.Invoke();
     }
     
     void IPointerUpHandler.OnPointerUp(PointerEventData eventData) {
         _graphic.raycastTarget = true;
-        transform.localScale = Vector3.one;
+        transform.DOScale(Vector3.one, .3f).SetEase(Ease.InOutBack);
         OnPointerUp.Invoke();
     }
 }
