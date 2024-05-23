@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 591002ce3931f274e9b9e6b22d0b4329, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardAudio: {fileID: 4479446972935636244}
+  _source: {fileID: 4479446972935636244}
   _pickSound: {fileID: 8300000, guid: 80a5c0ae65e17f74698a5efc92828e92, type: 3}
   _dropSound: {fileID: 8300000, guid: 46a96d6693b2a624ba49163a76f35658, type: 3}
 --- !u!82 &4479446972935636244
