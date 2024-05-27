@@ -1,49 +1,47 @@
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class Creature : MonoBehaviour, IEatable, IPointerEnterHandler, IPointerUpHandler {
-    [SerializeField]
-    private Shake _shaker;
+public class Creature : MonoBehaviour, IEatable {
+    [SerializeField] private HealthDisplay _healthDisplay;
+    [SerializeField] private FallOnCard _fallOnCard;
     
-    private IAttribute[] _attributes;
-
-    public event Action<int> OnHealthChanged = (health) => {};
-    
+    private List<IAttribute> _attributes;
     private int Health { get; set; }
-    public string Name { get; private set; }
-    
+
     private void Start() {
         Health = 10;
-        OnHealthChanged.Invoke(Health);
+        _healthDisplay.UpdateText(Health);
+        _attributes = new();
     }
 
-    private void Eat(IEatable eatable) {
-        Health += eatable.GetNutrition();
-        OnHealthChanged.Invoke(Health);
-        print($"Health: {Health}");
+    private void TryEat(GameObject card) {
+        if (card.TryGetComponent(out IEatable food) == false)
+            return;
+        
+        if (_attributes.All(attribute => attribute.CanEat(food)))
+            Eat(food);
     }
-    
+
+    private void Eat(IEatable food) {
+        Health += food.GetNutrition();
+        _healthDisplay.UpdateText(Health);
+    }
+
     public int GetNutrition() {
         gameObject.SetActive(false);
-        return Health;
+        return Health / 2;
     }
-    
-    public void OnPointerEnter(PointerEventData eventData) {
-        var drag = eventData.pointerDrag;
-        if (drag == null)
-            return;
-        _shaker.ShakeVisuals();
+
+    public void AddAttribute(IAttribute attribute) {
+        _attributes.Add(attribute);
     }
-    
-    public void OnPointerUp(PointerEventData eventData) {
-        var card = eventData.pointerEnter;
-        
-        if (card is null)
-            return;
-        
-        if (card.TryGetComponent(out IEatable food)) {
-            Eat(food);
-        }
+
+    private void OnEnable() {
+        _fallOnCard.OnCardDrop += TryEat;
+    }
+
+    private void OnDisable() {
+        _fallOnCard.OnCardDrop -= TryEat;
     }
 }

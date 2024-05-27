@@ -1,3 +1,3 @@
 ﻿public interface IAttribute {
-    void Apply();
+    bool CanEat(IEatable food);
 }
